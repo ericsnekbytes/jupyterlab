@@ -1,0 +1,11 @@
+Building Lab 4 / Notebook Compatible Jupyter Extensions
+
+Jupyter Notebook 7 is built with components from JupyterLab, and since both use the same building blocks, that means your extension can work on both with little or no modification depending on its the design.
+
+This guide will give you an overview of compatibility features, then a tutorial and reference code covering some of the topics mentioned here. If you don't know how to make extensions, you can read more about the basics at YY [LINK].
+
+How Compatibility Works
+
+At a high level, extensions for JupyterLab and Jupyter Notebook both typically start from a template project. You can download and start modifying a template project with Cookiecutter [LINK]. Once your template is ready, you can start adding features to build your extension.
+
+An extension for Lab (and for Notebook) is made up of a [LINK] series of bundled plugins, and those plugins use components from the interface toolkit Lumino as well as the JupyterLab API to help build your extension's look and behavior (both are written in Typescript).
