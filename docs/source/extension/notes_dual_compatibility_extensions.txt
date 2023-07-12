@@ -1,4 +1,15 @@
-Building Lab 4 / Notebook Compatible Jupyter Extensions
+
+
+Building Dual Compatibility Extensions with Lab 4 and Notebook
+Building Dual Compatibility Jupyter Extensions
+Building Lab 4 / Notebook 7 Dual Compatibility Jupyter Extensions
+
+
+
+
+
+
+Building Lab 4 / Notebook 7 Compatible Jupyter Extensions
 
 Jupyter Notebook 7 is built with components from JupyterLab, and since both use the same building blocks, that means your extension can work on both with little or no modification depending on its the design.
 
@@ -6,6 +17,84 @@ This guide will give you an overview of compatibility features, then a tutorial 
 
 How Compatibility Works
 
-At a high level, extensions for JupyterLab and Jupyter Notebook both typically start from a template project. You can download and start modifying a template project with Cookiecutter [LINK]. Once your template is ready, you can start adding features to build your extension.
+At a high level, extensions for JupyterLab and Jupyter Notebook both typically start from a template project. You can download and start modifying a template project with Cookiecutter [LINK]. Once your template is ready, you can start adding components and features to build your extension.
 
-An extension for Lab (and for Notebook) is made up of a [LINK] series of bundled plugins, and those plugins use components from the interface toolkit Lumino as well as the JupyterLab API to help build your extension's look and behavior (both are written in Typescript).
+An extension for Lab (and for Notebook 7) is made up of a [LINK] series of bundled plugins [LINK], and those plugins typically use components from the interface toolkit Lumino [LINK] as well as the JupyterLab API [LINK] (among others) to help build your extension's look and behavior (both are written in Typescript).
+
+This is how basic compatibility features work: both apps use the same building blocks and methods. For instance, both Lab and Notebook 7 accept Lumino widgets as interface components, both apps allow you to add them to the interface by specifying an "area" to place them into, and extensions for both use the same basic JupyterFrontendPlugin class.
+
+Compatibility in Simple Cases
+
+That means that some simple extensions, such as one that adds a single self-contained widget to the UI, don't need to do anything at all to be compatible with both Lab and Notebook 7: Just install the extension and it will seamlessly work! For instance, an extension that adds an icon widget to the top bar will seamlessly work in both Lab and Notebook 7 once it's installed.
+
+MAIN, TOP, RIGHT ETC note
+
+More Complex Compatibility Approaches
+
+The needs of your ext determine what kind of compatibility steps you will need to take to ensure it runs properly on both, sliding scale of complexity?
+
+Need to know:
+- Do I need to customize behaviors for lab and notebook? How much granularity?
+- Am I adding items to the interface that exist in both Lab and Notebook? MAIN is not present in lab for instance
+- 
+
+
+
+
+
+The most basic extension compatibility features rely on that shared usage of components and methods: Both Lab and Notebook 7 accept Lumino widgets as interface components, and both apps allow you to add them to the interface by specifying an "area" of the interface, for instance. This means that simple extensions, such as one that adds a single self-contained widget to the UI, don't need to do anything 
+
+
+
+
+
+Basic compatibility for simple extensions relies upon the shared
+such as an extension with a single self-contained widget in the UI, works on the 
+is dependent upon, works by,
+depends upon, builds on,
+
+you can just add your widget to an area and it will just work...sometimes
+
+By using the 
+
+
+For self contained extensions that
+
+to do things like connect with Jupyter's interface, add buttons and icons to the Notebook interface, or add completely new features.
+
+
+
+
+Extensions for Lab AND for Notebook are both made up of a series of bundled Plugins
+
+
+ both use JupyterLab components
+
+
+NEED DIAGRAMS and H*IGH LEVEL BASICS PAGES
+-Anatomy of an extension
+-High level tools overview...jlpm, conda/pip, typescript, blah blahb
+-Use inkscape for this, add pages before release if possible
+-cookiewcutter link, can be to JUP TOOLS paghe"?
+
+
+obtained with the "Cookiecutter" tool.
+
+
+
+
+
+
++What nmeeds to go into th is doc?? how to structgure...?
+
+-Do an example like Jeremy's...?
+-Also explain where there are incompatibilities, use mtg's approach...export diff plugins to encapsulate differences (one requires ilabshell one requires inotebookshell etc)
+-Need to explain prereq steps, separater them out so not overhwlemingb
+-Make example repo with tutorial stuff
+-Make sample code/template repo for dual compat with mtg's approach?? cookiecutter?
+
+
+
+
+
+
