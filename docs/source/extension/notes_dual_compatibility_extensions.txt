@@ -33,6 +33,78 @@ Not all extensions will be able to use "Do Nothing" compatibility: The "main" ar
 
 Compatibility in Complex Extensions
 
+Complex extensions can be adapted to work in both apps. The approach and effort needed to achieve compatibility depends on the design of your extension.
+
+Some features only exist in Lab, or in Notebook 7, and in those cases you will have some extra work to do to ensure compatibility, or to disable features that are not available in one of the interfaces. On top of that, you can specialize or add behaviors that are specific only to Lab or only to Notebook 7.
+
+With that in mind, here are some general tips for designing compatible extensions:
+
+- Identify which features in your extension are Lab-only and which are Notebook 7-only, and try to separate those from the most important core widgets and classes (you should put this app-specific code in a different place than your main extension classes...if you include app-specific code inside your main classes and widgets, it will be much harder to achieve compatibility later)
+
+- Organize your widgets and classes to keep important core features separate from Lab or Notebook 7 specific interface and feature code...this way, you can minimize the amount of code you need to adapt/update
+
+
+- Consider making some features optional, and enable them only when the the app-specific features they need are available (more on this "optional-extras" approach later)
+- Note that adding app-specific extra behaviors and specializations (features that rely on capabilities that only exist in either Lab or Notebook 7) may require more complex compatibility architectures
+
+
+
+
+
+- Organize your widgets and classes to keep important core features separate from Lab or Notebook 7 specific interface and feature code...this way, you can minimize the amount of code you need to adapt/update
+...this may necessitate complex branching or restructuring of your code.
+
+if you're writing a feature that 
+
+if your extension has a feature that depends on Lab, 
+
+- Identify which features are Lab-only and which are Notebook 7-only, and try to separate those from the most important core widgets and classes in your app
+
+- Organize your widgets and classes so that common core functionality
+
+
+Consider using an optional-extras design pattern. In this scheme, features that only work in either Lab or Notebook 7 can be disabled if they're not running in the appropriate app
+
+
+
+
+Approaches
+
+You can 
+
+
+It is a good idea to design your
+
+You can aim to provide a set of optional extra features specific to only Lab or only Notebook 7, for instance, and disable them when they're not available.
+
+You can make a core and others blah blah.
+
+
+You can design
+
+
+If your extension has optional featguirte
+
+
+Some extensions may want to enable features only available in Lab, for instance
+
+
+
+
+- Build core funcitonality in one place, then do 
+
+
+
+Some extensions may want to enable some optional features 
+
+Some features only exist in Lab, or in Notebook 7, and in those cases you will have some extra work to do to ensure compatibility with both apps.
+
+
+
+
+Adapting a complex extension for compatibility in both apps 
+
+
 There's a wide range of compa
 
 
