@@ -43,7 +43,9 @@ With that in mind, here are some general tips for designing compatible extension
 - Consider making some features optional, and enable them only when the the app-specific features they need are available (more on this "optional-extras" approach later)
 - Note that adding specialized app-specific extra behaviors and features (features that rely on capabilities that only exist in either Lab or Notebook 7) may require more complex compatibility architectures
 
+Approaches
 
+With the optional-extras approach, you identify which 
 
 
 
