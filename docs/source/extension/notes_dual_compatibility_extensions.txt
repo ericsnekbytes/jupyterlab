@@ -11,7 +11,7 @@ Building Lab 4 / Notebook 7 Dual Compatibility Jupyter Extensions
 
 Building Lab 4 / Notebook 7 Compatible Jupyter Extensions
 
-Jupyter Notebook 7 is built with components from JupyterLab, and since both use the same building blocks, that means your extension can work on both with little or no modification depending on its the design.
+Jupyter Notebook 7 is built with components from JupyterLab, and since both use the same building blocks, that means your extension can work on both with little or no modification depending on its design.
 
 This guide will give you an overview of compatibility features, then a tutorial and reference code covering some of the topics mentioned here. If you don't know how to make extensions, you can read more about the basics at YY [LINK].
 
@@ -23,13 +23,50 @@ An extension for Lab (and for Notebook 7) is made up of a [LINK] series of bundl
 
 This is how basic compatibility features work: both apps use the same building blocks and methods. For instance, both Lab and Notebook 7 accept Lumino widgets as interface components, both apps allow you to add them to the interface by specifying an "area" to place them into, and extensions for both use the same basic JupyterFrontendPlugin class.
 
-Compatibility in Simple Cases
+"Do Nothing" Compatibility
 
-That means that some simple extensions, such as one that adds a single self-contained widget to the UI, don't need to do anything at all to be compatible with both Lab and Notebook 7: Just install the extension and it will seamlessly work! For instance, an extension that adds an icon widget to the top bar will seamlessly work in both Lab and Notebook 7 once it's installed.
+This is the easiest way to achieve compatibility: If your extension only uses features that both Lab and Notebook 7 have, you can simply install it and it will seamlessly work in both Lab and Notebook 7.
+
+An extension that adds a single self-contained icon widget to the top bar of the UI, for instance, doesn't need to do anything at all to be compatible with both Lab and Notebook 7 (both apps have a top area that can hold the widget, so it will be visible in both Lab and Notebook 7 upon install and after launch).
+
+Not all extensions will be able to use "Do Nothing" compatibility: The "main" area in Lab is one example of a feature/UI area that is not supported by Notebook 7 where "Do Nothing" compatibility won't work.
+
+Compatibility in Complex Extensions
+
+There's a wide range of compa
+
+
+Compatibility with both Lab and Notebook 7 can be achieved in 
+
+
+
+
+
+
+Some extensions may want to use Lab-only features in
+
+
+Extensions that need to 
+
+
+
+Some features only exist in Lab, or in Notebook 7, and in those cases you will have some extra work to do to ensure compatibility with both apps.
+
+
+
+: Just install the extension and it will seamlessly work! For instance, an extension that adds an icon widget to the top bar will seamlessly work in both Lab and Notebook 7 once it's installed 
+
+ (the "Main" area in Lab is an example of a feature/area that Notebook 7 does not support, so extensions using the main area in Lab will require some extra work to be compatible with both apps).
+
+Some features only exist in Lab, or in Notebook 7, and in those cases you will have some extra work to do to ensure compatibility with both apps.
 
 MAIN, TOP, RIGHT ETC note
 
 More Complex Compatibility Approaches
+
+
+
+
 
 The needs of your ext determine what kind of compatibility steps you will need to take to ensure it runs properly on both, sliding scale of complexity?
 
