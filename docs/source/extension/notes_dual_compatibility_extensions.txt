@@ -43,9 +43,58 @@ With that in mind, here are some general tips for designing compatible extension
 - Consider making some features optional, and enable them only when the the app-specific features they need are available (more on this "optional-extras" approach later)
 - Note that adding specialized app-specific extra behaviors and features (features that rely on capabilities that only exist in either Lab or Notebook 7) may require more complex compatibility architectures
 
-Approaches
+Solutions
+
+The "Do Nothing" Strategy
+
+Extensions that only use features common to both Lab and Notebook 7 don't need any modifications to work in both apps. Users who install your extension will be able to seamlessly run it in either Lab or Notebook 7.
+
+Keep in mind that some features for Lab are not available in Notebook 7:
+
+- The "main" area in Lab does not exist in Notebook 7
+- Notebook 7 does not have a status bar (CHECK THIS >>>>>>>>>>>)
+
+See [LINK] this example of a compatible top-bar-icon-widget that works in both Lab and Notebook 7 out of the box.
+
+The Multi-Plugin Strategy
+
+Extension behaviors can check for behaviors and switch 
+
+use a modular multi-plugin approach to 
+
+Extensions can export a list of plugins, where each plugin can independently request Lab-only or Notebook 7-only features (via their "requires" property).
+
+
+require Lab and some require Notebook 7.
+
+This method uses multiple plugins and a thin compatibility layer to switch between a Lab specific version of the extension and a Notebook 7 specific version of the extension.
+
+REQUIRES, OPTIONAL, ARGS ORDER ETC
+
+See [LINK] this example (at XX) for an example extension that either adds a widget to the "main" area in Lab
+
+
+To switch between 
+
+Extensions can export 
+
+With this strategy, you ensure that yo
+
+Here's an example of the 
+
+
+Here's an example of "Do Nothing" 
+
+[LINK TO JEREMYS VIDEO]
+
+
 
 With the optional-extras approach, you identify which 
+
+
+
+- optional extras
+- thin compatibility layer (do this or do that if I'm in lab or nb)
 
 
 
