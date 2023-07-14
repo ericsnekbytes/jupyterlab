@@ -57,6 +57,18 @@ Keep in mind that some features for Lab are not available in Notebook 7:
 See [LINK] this example of a compatible top-bar-icon-widget that works in both Lab and Notebook 7 out of the box.
 
 The Multi-Plugin Strategy
+Switching Behaviors with Multiple Plugins
+Using Multiple Plugins to Enable App Specific Behaviors
+Enabling Features by using Multiple Plugins
+
+One way to selectively enable app-specific features is to export a list of plugins from your extension, then use the "requires" plugin property to request Lab-only or Notebook-7 only features (testing for ILabShell or INotebookShell is an easy way to check if your extension is running in Lab or Notebook). When your extension loads in Notebook 7, any Lab-only features will not load:
+
+SAMPLE CODE/REPO LINK?
+
+The example below adds a widget to the main area in Lab, but adds to a different area in Notebook 7 (since there's no main area in Notebook 7).
+
+LINK/REPO
+
 
 Extension behaviors can check for behaviors and switch 
 
