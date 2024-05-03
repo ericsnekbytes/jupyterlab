@@ -32,8 +32,9 @@ JupyterLab application: Your plugins can be reused by other extensions, or
 swapped out so that users (or other teams inside your company, for example)
 can easily modify small pieces of your extension.
 
-Let's take a very quick look at a basic "Application Plugin" (you will learn
-extra details about application plugins later):
+At the highest level, a JupyterLab plugin is a Javascript object with
+several metadata fields. Let's take a quick look at an example below (this
+is an "application plugin", you will learn more about those later):
 
 .. code-block:: typescript
 
@@ -47,18 +48,15 @@ extra details about application plugins later):
      activate: activateFunction
    };
 
-So, this application plugin is a TypeScript object with several metadata
-fields. The ``id`` and ``activate`` fields are mandatory, the others are
-optional.
-
-At the highest level, JupyterLab will load your extension, it will read
-information from these fields, and will then run the ``activate`` function
-you supplied in your ``activate`` field. You will use the ``activate``
-function to perform the necesssary setup steps to launch your extension.
+When JupyterLab loads your extension, it will read information from these
+fields, and will then run the ``activate`` function you supplied in your
+``activate`` field. You will use the ``activate`` function to perform the
+necessary setup steps to launch your extension.
 
 A more detailed explanation of these fields is included later in this
-document, along with details about the different kinds of plugins, and what
-they are used for.
+document, along with details about the different kinds of plugins and what
+they are used for. For now, it's helpful to summarize by saying that
+these fields drive the flexibility of the extension system.
 
 Plugins Interacting with Each Other
 -----------------------------------
@@ -155,7 +153,11 @@ pass you an object for it (if it's available) or ``null`` if it's not.
 
 Both of these behaviors can be used to enable compatibility with multiple
 Jupyter applications (like JupyterLab + Jupyter Notebook 7), which you can
-read more about in the :ref:`Compatibility Guide <extension_dual_compatibility>`.
+read more about in the :ref:`Compatibility Guide <extension_multiple_ui>`.
+
+When JupyterLab starts up, it checks which plugins need which services, and
+carefully arranges the order in which plugins are activated to ensure that
+a provider (ADD_LINK) of a service is activated before its consumers.
 
 In order to identify a particular service object/feature, JupyterLab uses
 "Token" objects (instances of the Lumino Token class [ADD_LINK]), so the items
@@ -164,12 +166,13 @@ the service objects or the plugins themselves, they are actually token objects
 that are used to identify and fetch the actual service objects they are
 associated with.
 
-Unless your plugins are providing services to the system, you probably won't
-need to know much about Tokens: You can just think of them as identifiers.
+**Not everyone needs to use tokens extensively!**
 
-JupyterLab orders plugin activation to ensure that a provider of a service
-is activated before its consumers. A token can only be registered with the
-system once.
+If you're planning on splitting up your extension into multiple plugins and
+making those available for reuse by others in JupyterLab's extension system,
+it's good to know a little more about tokens (and how to make your own).
+
+If not, you can just think of them as identifiers.
 
 A consumer might list a token as ``optional`` when the service it identifies
 is not critical to the consumer, but would be nice to have if the service is
@@ -180,6 +183,160 @@ distribution without a status bar to use the consumer plugin.
 
 More Details about Tokens
 """""""""""""""""""""""""
+
+JupyterLab uses tokens to identify reusable features (called "service objects" [ADD_LINK])
+in the extension system. A token is an instance of the Lumino Token class.
+
+The Status Bar in JupyterLab is an example of a feature that your plugins can
+request, which allows you to add your own status bar items, and it is identified
+by the IStatusBar token.
+
+
+
+
+
+
+
+JupyterLab uses tokens to identify reusable features ("Service objects" [ADD_LINK])
+in the extension system. A token is an instance of the Lumino Token class,
+and you will be using them to request features from JupyterLab
+
+
+
+The IStatusBar token, for instance, identifies the JupyterLab status bar
+
+
+
+
+
+
+
+JupyterLab uses tokens to identify reusable features ("service objects" [ADD_LINK])
+in the extension system. A token is an instance of the Lumino Token class.
+
+The Status Bar in JupyterLab is an example of a feature that your plugins can
+request, which allows you to add your own status bar items.
+
+
+
+To
+request the status bar service object, you will need to import the IStatusBar
+
+
+
+
+
+
+if you want to request the JupyterLab status bar in your plugin
+so that you can add new items to it,
+
+
+you can request the JupyterLab status bar
+
+
+
+
+The IStatusBar token, for instance, identifies the JupyterLab status bar. To
+request the status bar service object, you will need to import the IStatusBar
+
+
+
+
+
+You can request the JupyterLab Status Bar in your plugin to add new items to
+the status bar
+
+
+
+The JupyterLab Status Bar, for example,
+
+
+
+
+JupyterLab uses tokens to identify reusable features ("service objects" [ADD_LINK])
+in the extension system. A token is an instance of the Lumino Token class.
+
+The Status Bar in JupyterLab is an example of a feature that your plugins can
+request, which allows you to add your own status bar items.
+
+
+
+
+
+
+
+
+To request it, you will need to import the IStatusBar token that identifies
+it, and then list that token in the ``requires`` or ``optional`` field of
+your plugin.
+
+
+
+just list the IStatusBar token in the ``requires`` or
+``optional`` field of your plugin.
+
+
+A token is an instance of the Lumino Token class. JupyterLab uses Lumino
+Token objects to identify reusable features (also called "Service objects",
+read more about those in the XX section above) in the extension system.
+
+The Status Bar in JupyterLab is an example of a feature that your plugins
+can request (you can use it to add your own status bar items, for instance).
+
+
+you do so by listing the istatusbar in the lsit
+
+
+
+
+
+
+
+
+JupyterLab uses Lumino Token objects to identify reusable features (also
+called "Service objects", read more about those in the XX section above)
+in the extension system. The Status Bar in JupyterLab is an example of a 
+eature that your plugins can request, which allows you to add your own
+status bar items, for instance.
+for example,
+can be requested by your plugin by listing the IStatusBar token
+
+
+
+JupyterLab uses token objects to identify features ("service objects") in
+the extension system.
+
+
+
+Token objects are identifiers that JupyterLab uses to find services
+
+
+
+
+When your extension requests a feature in its ``requires`` or ``optional``
+fields, the items you list in those fields are tokens. Token objects
+are used by JupyterLab to identify
+
+
+
+those features are identified by a token (an instance of the Lumino
+token class).
+
+
+
+Tokens are objects that JupyterLab uses to identify service objects in the\
+
+
+
+
+When your extension requests a feature in its ``requires`` or ``optional``
+fields, those features are identified by a token (an instance of the Lumino
+token class).
+
+
+Tokens are used to identify service objects 
+
+
 
 When your extension is loaded by JupyterLab, any services from your plugins
 which are exported are registered with the extension system.
@@ -212,6 +369,27 @@ package using the token uses TypeScript, the service will be type-checked
 against this interface when the package is compiled to JavaScript). This
 can help prevent errors by ensuring that a service cannot be swapped out
 unless it is compatible with the original service object.
+
+
+
+
+
+
+
+
+
+
+
+
+If you plan to split up your extension into multiple plugins, it is helpful
+to know that the actual items you list in our ``requires`` and ``optional``
+fields are not actually the service objects or the plugins themselves, they are actually
+identifier objects called "Tokens"
+
+
+
+
+
 
 Publishing Your Own Tokens
 """"""""""""""""""""""""""
@@ -372,6 +550,68 @@ and a countChanges Signal (a Lumino Signal object).
 
 
 
+Providing a service
+"""""""""""""""""""
+
+When an extension (the "provider") is providing a service identified by a token that is imported from a dependency ``token-package``, the provider should configure the dependency as a singleton. This makes sure the provider is identifying the service with the same token that others are importing. If ``token-package`` is not a core package, it will be bundled with the provider and available for consumers to import if they :ref:`require the service <dedup_require_service>`.
+
+.. code-block:: json
+
+   "jupyterlab": {
+     "sharedPackages": {
+       "token-package": {
+         "singleton": true
+        }
+      }
+    }
+
+.. _dedup_require_service:
+
+Requiring a service
+"""""""""""""""""""
+
+When an extension (the "consumer") is requiring a service provided by another extension (the "provider"), identified by a token imported from a package (the ``token-package``, which may be the same as the provider), the consumer should configure the dependency ``token-package`` to be a singleton to ensure the consumer is getting the exact same token the provider is using to identify the service. Also, since the provider is providing a copy of ``token-package``, the consumer can exclude it from its bundle.
+
+.. code-block:: json
+
+   "jupyterlab": {
+     "sharedPackages": {
+       "token-package": {
+         "bundled": false,
+         "singleton": true
+        }
+      }
+    }
+
+.. _dedup_optional_service:
+
+Optionally using a service
+""""""""""""""""""""""""""
+
+When an extension (the "consumer") is optionally using a service identified by a token imported from a package (the ``token-package``), there is no guarantee that a provider is going to be available and bundling ``token-package``. In this case, the consumer should only configure ``token-package`` to be a singleton:
+
+.. code-block:: json
+
+   "jupyterlab": {
+     "sharedPackages": {
+       "token-package": {
+         "singleton": true
+        }
+      }
+    }
+
+.. TODO: fill out the following text to a more complete explanation of how the deduplication works.
+
+   Prebuilt extensions need to deduplicate many of their dependencies with other prebuilt extensions and with source extensions. This deduplication happens in two phases:
+
+   1. When JupyterLab is initialized in the browser, the core Jupyterlab build (including all source extensions) and each prebuilt extension can share copies of dependencies with a package cache in the browser.
+   2. A source or prebuilt extension can import a dependency from the cache while JupyterLab is running.
+
+   The main options controlling how things work in this deduplication are as follows. If a package is listed in this sharing config, it will be requested from the package cache.
+
+   * ``bundled`` - if true, a copy of this package is also provided to the package cache. If false, we will request a version from the package cache. Set this to false if we know that the package cache will have the package and you do not want to bundle a copy (perhaps to make your prebuilt bundle smaller).
+   ``singleton`` - if true, makes sure to use the same copy of a dependency that others are using, even if it is not the right version.
+   ``strictVersion`` - if true, throw an error if we would be using the wrong version of a dependency.
 
 
 
@@ -382,28 +622,30 @@ and a countChanges Signal (a Lumino Signal object).
 
 
 
-As a type of dependency injection pattern
-Reusability Patterns in JupyterLab
-The heart of reusability and 
-
-one plugin "provides" an object (called a
-**service object**) to the system, and other plugins "consume" that object
 
 
 
-Plugins are a foundational piece of the larger [JupyterLab extension system](ADD_LINK),
-make sure you read about that first here [ADD_LINK]).
 
 
-By splitting up your features into multiple plugins, they can be reused by
-other extensions, or swapped out so that users can easily modify small pieces
-of your extension.
+
+######
+So, this application plugin is a TypeScript object with several metadata
+fields. The ``id`` and ``activate`` fields are mandatory, the others are
+optional.
+
+The ``id`` and ``activate`` fields are mandatory, the others are
+optional. Most importantly, the ``requires``, ``optional`` and
+``activate``
+
+, most importantly, the ``requires``, ``optional``
+and ``activate`` fields (along with the ``id`` field which allows
+it to be identified inside the extension system).
+#######
 
 
-the fact that one plugin "provides" an object (called a
-**service object**) to the system, and other plugins "consume" that object
-by using it in an extension to add extra features and customizations
-to JupyterLab (and an extension consists of one or more plugins).
+
+
+
 
 
 
@@ -420,16 +662,14 @@ pattern).
 
 
 
-Plugins are a foundational piece of the larger [JupyterLab extension system](ADD_LINK)
-(read about that first here [ADD_LINK]),
+Types of Plugins
+^^^^^^^^^^^^^^^^
 
-Plugins are a foundational piece of the larger [JupyterLab extension system](ADD_LINK)
-(read about that first here [ADD_LINK]), so it's helpful to start by stating
-that each JupyterLab extension is a package that contains one or more plugins.
+JupyterLab supports several types of plugins (some with extras restrictions and limitations):
 
-Plugins are a foundational piece of the [JupyterLab extension system](ADD_LINK)
-(read more about that here), which gives you the power to build new features
-for JupyterLab.
+-  **Application plugins:** Application plugins are the fundamental building block of JupyterLab functionality. Application plugins interact with JupyterLab and other plugins by requiring services provided by other plugins, and optionally providing their own service to the system. Application plugins in core JupyterLab include the main menu system, the file browser, and the notebook, console, and file editor components.
+-  **Mime renderer plugins:** Mime renderer plugins are simplified, restricted ways to extend JupyterLab to render custom mime data in notebooks and files. These plugins are automatically converted to equivalent application plugins by JupyterLab when they are loaded. Examples of mime renderer plugins that come in core JupyterLab are the pdf viewer, the JSON viewer, and the Vega viewer.
+-  **Theme plugins:** Theme plugins provide a way to customize the appearance of JupyterLab by changing themeable values (i.e., CSS variable values) and providing additional fonts and graphics to JupyterLab. JupyterLab comes with light and dark theme plugins.
 
 
 
@@ -442,25 +682,64 @@ for JupyterLab.
 
 
 
+Application Plugins
+^^^^^^^^^^^^^^^^^^^
+
+An application plugin is a JavaScript object with a number of metadata fields. A typical application plugin might look like this in TypeScript:
+
+.. code-block:: typescript
+
+   const plugin: JupyterFrontEndPlugin<MyToken> = {
+     id: 'my-extension:plugin',
+     description: 'Provides a new service.',
+     autoStart: true,
+     requires: [ILabShell, ITranslator],
+     optional: [ICommandPalette],
+     provides: MyToken,
+     activate: activateFunction
+   };
+
+The ``id`` and ``activate`` fields are required and the other fields may be omitted. For more information about how to use the ``requires``, ``optional``, or ``provides`` fields, see :ref:`services`.
+
+- ``id`` is a required unique string. The convention is to use the NPM extension package name, a colon, then a string identifying the plugin inside the extension.
+- ``description`` is an optional string. It allows to document the purpose of a plugin.
+- ``autostart`` indicates whether your plugin should be activated at application startup. Typically this should be ``true``. If it is ``false`` or omitted, your plugin will be activated when any other plugin requests the token your plugin is providing.
+- ``requires`` and ``optional`` are lists of :ref:`tokens <tokens>` corresponding to services other plugins provide. These services will be given as arguments to the ``activate`` function when the plugin is activated. If a ``requires`` service is not registered with JupyterLab, an error will be thrown and the plugin will not be activated.
+- ``provides`` is the :ref:`token <tokens>` associated with the service your plugin is providing to the system. If your plugin does not provide a service to the system, omit this field and do not return a value from your ``activate`` function.
+- ``activate`` is the function called when your plugin is activated. The arguments are, in order, the :ref:`application object <application_object>`, the services corresponding to the ``requires`` tokens, then the services corresponding to the ``optional`` tokens (or ``null`` if that particular ``optional`` token is not registered in the system). If a ``provides`` token is given, the return value of the ``activate`` function (or resolved return value if a promise is returned) will be registered as the service associated with the token.
+
+.. _rendermime:
+
+MIME Renderer Plugins
+^^^^^^^^^^^^^^^^^^^^^
+
+MIME Renderer plugins are a convenience for creating a plugin
+that can render mime data in a notebook and files of the given mime type. MIME renderer plugins are more declarative and more restricted than standard plugins.
+A mime renderer plugin is an object with the fields listed in the
+`rendermime-interfaces IExtension <../api/interfaces/rendermime_interfaces.IRenderMime.IExtension.html>`__
+object.
+
+JupyterLab has a `pdf mime renderer extension <https://github.com/jupyterlab/jupyterlab/tree/main/packages/pdf-extension>`__, for example. In core JupyterLab, this is used to view pdf files and view pdf data mime data in a notebook.
+
+We have a `MIME renderer example <https://github.com/jupyterlab/extension-examples/tree/master/mimerenderer>`__  walking through creating a mime renderer extension which adds mp4 video rendering to JupyterLab. The `extension template <https://github.com/jupyterlab/extension-template>`_ supports MIME renderer extensions.
+
+The mime renderer can update its data by calling ``.setData()`` on the
+model it is given to render. This can be used for example to add a
+``png`` representation of a dynamic figure, which will be picked up by a
+notebook model and added to the notebook document. When using
+``IDocumentWidgetFactoryOptions``, you can update the document model by
+calling ``.setData()`` with updated data for the rendered MIME type. The
+document can then be saved by the user in the usual manner.
+
+Theme plugins
+^^^^^^^^^^^^^
+
+A theme is a special application plugin that registers a theme with the ``ThemeManager`` service. Theme CSS assets are specially bundled in an extension (see :ref:`themePath`) so they can be unloaded or loaded as the theme is activated. Since CSS files referenced by the ``style`` or ``styleModule`` keys are automatically bundled and loaded on the page, the theme files should not be referenced by these keys.
+
+The extension package containing the theme plugin must include all static assets that are referenced by ``@import`` in its theme CSS files. Local URLs can be used to reference files relative to the location of the referring sibling CSS files. For example ``url('images/foo.png')`` or ``url('../foo/bar.css')`` can be used to refer local files in the theme. Absolute URLs (starting with a ``/``) or external URLs (e.g. ``https:``) can be used to refer to external assets.
+
+See the `JupyterLab Light Theme <https://github.com/jupyterlab/jupyterlab/tree/main/packages/theme-light-extension>`__ for an example.
+
+See the `TypeScript extension template <https://github.com/jupyterlab/extension-template>`__ (choosing ``theme`` as ``kind`` ) for a quick start to developing a theme plugin.
 
 
-
-
-
-
-
-
-JupyterLab's plugin system is designed so that plugins can depend on and
-reuse features from one another. A key part of this approach is JupyterLab's
-**provider-consumer pattern**.
-
-The Provider-Consumer Pattern
------------------------------
-
-..
-    TODO add to glossary, provider-consumer, service objects, tokens
-
-In the provider-consumer pattern, one plugin "provides" an object (called a
-**service object**) to the system, and other plugins "consume" that object
-by using it in an extension to add extra features and customizations
-to JupyterLab (and an extension consists of one or more plugins).
