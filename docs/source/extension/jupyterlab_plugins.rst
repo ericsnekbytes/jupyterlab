@@ -147,6 +147,25 @@ in JupyterLab's provider-consumer pattern (ADD_LINK), and other plugins can use 
 this object (the "service object") in their extensions. Read more about this
 in the ``Making Your Plugin a Provider`` (ADD_LINK) section below.
 
+.. _application_object:
+
+The Application Object
+""""""""""""""""""""""
+
+JupyterLab will always pass a Jupyter front-end application object to a plugin's
+``activate`` function as its first argument. You can use the application object to
+add your widget(s) to the JupyterLab interface (for instance) and it has a number
+of other properties and methods you can use to interact with documents, data and
+other features of the program.
+
+-  ``commands`` - an extensible registry used to add and execute commands in the application.
+-  ``docRegistry`` - an extensible registry containing the document types that the application is able to read and render.
+-  ``restored`` - a promise that is resolved when the application has finished loading.
+-  ``serviceManager`` - low-level manager for talking to the Jupyter REST API.
+-  ``shell`` - a generic Jupyter front-end shell instance, which holds the user interface for the application. See :ref:`shell` for more details.
+
+See the JupyterLab API reference documentation for the ``JupyterFrontEnd`` class for more details.
+
 How Requesting Features Works
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -328,6 +347,44 @@ This means that anyone who makes a provider plugin for the StepCounter service
 must return an object that has a getStepCount method, incrementStepCount method,
 and a countChanges Signal (a Lumino Signal object).
 
+Plugin Settings
+^^^^^^^^^^^^^^^
+
+JupyterLab includes a plugin settings system that can be used to provide default
+setting values and user overrides. A plugin's settings are specified with a
+JSON schema file. The ``jupyterlab.schemaDir`` field in ``package.json``gives
+the relative location of the directory containing plugin settings schema files.
+
+The setting system relies on plugin ids following the convention ``<source_package_name>:<plugin_name>``. The settings schema file for the plugin ``plugin_name`` is ``<schemaDir>/<plugin_name>.json``.
+
+For example, the JupyterLab ``filebrowser-extension`` package exports the ``@jupyterlab/filebrowser-extension:browser`` plugin. In the ``package.json`` for ``@jupyterlab/filebrowser-extension``, we have::
+
+        "jupyterlab": {
+          "schemaDir": "schema",
+        }
+
+The file browser setting schema file (which specifies some default keyboard shortcuts and other settings for the filebrowser) is located in ``schema/browser.json`` (see `here <https://github.com/jupyterlab/jupyterlab/blob/main/packages/filebrowser-extension/schema/browser.json>`__).
+
+See the
+`fileeditor-extension <https://github.com/jupyterlab/jupyterlab/tree/main/packages/fileeditor-extension>`__
+for another example of an extension that uses settings.
+
+Please ensure that the schema files are included in the ``files`` metadata in ``package.json``.
+
+When declaring dependencies on JupyterLab packages, use the ``^`` operator before a package version so that the build system installs the newest patch or minor version for a given major version. For example, ``^4.0.0`` will install version 4.0.0, 4.0.1, 4.1.0, etc.
+
+A system administrator or user can override default values provided in a plugin's settings schema file with the :ref:`overrides.json <overridesjson>` file.
+
+
+
+
+
+
+Structuring Your Extension
+--------------------------
+
+Now that you understand the plugin system, FOOBAR
+
 Designing for Reusability
 """""""""""""""""""""""""
 
@@ -367,74 +424,8 @@ system with their own alternative file browser service.
 
    A pattern in core JupyterLab is to create and export tokens from a self-contained ``tokens`` JavaScript module in a package. This enables consumers to import a token directly from the package's ``tokens`` module (e.g., ``import { MyToken } from 'provider/tokens';``), thus enabling a tree-shaking bundling optimization to possibly bundle only the tokens and not other code from the package.
 
-
-
-
-
-
-
-
-
-
-.. _application_object:
-
-Application Object
-""""""""""""""""""
-
-A Jupyter front-end application object is given to a plugin's ``activate`` function as its first argument. The application object has a number of properties and methods for interacting with the application, including:
-
--  ``commands`` - an extensible registry used to add and execute commands in the application.
--  ``docRegistry`` - an extensible registry containing the document types that the application is able to read and render.
--  ``restored`` - a promise that is resolved when the application has finished loading.
--  ``serviceManager`` - low-level manager for talking to the Jupyter REST API.
--  ``shell`` - a generic Jupyter front-end shell instance, which holds the user interface for the application. See :ref:`shell` for more details.
-
-See the JupyterLab API reference documentation for the ``JupyterFrontEnd`` class for more details.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .. _schemaDir:
 
-Plugin Settings
-^^^^^^^^^^^^^^^
-
-JupyterLab exposes a plugin settings system that can be used to provide
-default setting values and user overrides. A plugin's settings are specified with a JSON schema file. The ``jupyterlab.schemaDir`` field in ``package.json`` gives the relative location of the directory containing plugin settings schema files.
-
-The setting system relies on plugin ids following the convention ``<source_package_name>:<plugin_name>``. The settings schema file for the plugin ``plugin_name`` is ``<schemaDir>/<plugin_name>.json``.
-
-For example, the JupyterLab ``filebrowser-extension`` package exports the ``@jupyterlab/filebrowser-extension:browser`` plugin. In the ``package.json`` for ``@jupyterlab/filebrowser-extension``, we have::
-
-        "jupyterlab": {
-          "schemaDir": "schema",
-        }
-
-The file browser setting schema file (which specifies some default keyboard shortcuts and other settings for the filebrowser) is located in ``schema/browser.json`` (see `here <https://github.com/jupyterlab/jupyterlab/blob/main/packages/filebrowser-extension/schema/browser.json>`__).
-
-See the
-`fileeditor-extension <https://github.com/jupyterlab/jupyterlab/tree/main/packages/fileeditor-extension>`__
-for another example of an extension that uses settings.
-
-Please ensure that the schema files are included in the ``files`` metadata in ``package.json``.
-
-When declaring dependencies on JupyterLab packages, use the ``^`` operator before a package version so that the build system installs the newest patch or minor version for a given major version. For example, ``^4.0.0`` will install version 4.0.0, 4.0.1, 4.1.0, etc.
-
-A system administrator or user can override default values provided in a plugin's settings schema file with the :ref:`overrides.json <overridesjson>` file.
 
 
 
@@ -442,15 +433,11 @@ A system administrator or user can override default values provided in a plugin'
 
 
 
-______________
 
 
-In the following discussion, the plugin that is providing a service to the
-system is the *provider* plugin, and the plugin that is requiring and using
-the service is the *consumer* plugin. Note that these kinds of *provider*
-and *consumer* plugins are fundamental parts of JupyterLab's Provider-Consumer
-pattern (which is a type of `dependency-injection <https://en.wikipedia.org/wiki/Dependency_injection>`_
-pattern).
+
+
+
 
 
 
@@ -465,17 +452,6 @@ JupyterLab supports several types of plugins (some with extras restrictions and 
 -  **Application plugins:** Application plugins are the fundamental building block of JupyterLab functionality. Application plugins interact with JupyterLab and other plugins by requiring services provided by other plugins, and optionally providing their own service to the system. Application plugins in core JupyterLab include the main menu system, the file browser, and the notebook, console, and file editor components.
 -  **Mime renderer plugins:** Mime renderer plugins are simplified, restricted ways to extend JupyterLab to render custom mime data in notebooks and files. These plugins are automatically converted to equivalent application plugins by JupyterLab when they are loaded. Examples of mime renderer plugins that come in core JupyterLab are the pdf viewer, the JSON viewer, and the Vega viewer.
 -  **Theme plugins:** Theme plugins provide a way to customize the appearance of JupyterLab by changing themeable values (i.e., CSS variable values) and providing additional fonts and graphics to JupyterLab. JupyterLab comes with light and dark theme plugins.
-
-
-
-
-
-
-
-
-
-
-
 
 Application Plugins
 ^^^^^^^^^^^^^^^^^^^
@@ -536,5 +512,38 @@ The extension package containing the theme plugin must include all static assets
 See the `JupyterLab Light Theme <https://github.com/jupyterlab/jupyterlab/tree/main/packages/theme-light-extension>`__ for an example.
 
 See the `TypeScript extension template <https://github.com/jupyterlab/extension-template>`__ (choosing ``theme`` as ``kind`` ) for a quick start to developing a theme plugin.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+______________
+
+
+In the following discussion, the plugin that is providing a service to the
+system is the *provider* plugin, and the plugin that is requiring and using
+the service is the *consumer* plugin. Note that these kinds of *provider*
+and *consumer* plugins are fundamental parts of JupyterLab's Provider-Consumer
+pattern (which is a type of `dependency-injection <https://en.wikipedia.org/wiki/Dependency_injection>`_
+pattern).
+
+
+
+
+
+
+
 
 

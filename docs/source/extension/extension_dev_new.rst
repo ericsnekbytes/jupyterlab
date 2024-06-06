@@ -148,15 +148,17 @@ JupyterLab, and it is a type of [dependency injection pattern](ADD_LINK).
 For a detailed breakdown of the different types of available plugins, and XX,
 see the plugin page [ADD_LINK].
 
+The Structure of an Extension
+-----------------------------
 
+A look at the stuff inside an extension template, package.json etc.
 
+Extension Development Workflows
+-------------------------------
 
+DIAGRAM ABOUT BUILD PROCESS ETC
 
-
-
-
-
-
+EXPLAIN NPM, PACKAGE REPOSITORIES ETC
 
 
 
@@ -232,15 +234,19 @@ Finally, you will need to configure babel with a ``babel.config.js`` file contai
 
 
 
+Preparing Your Extension for Release
+------------------------------------
+
+.. note::
+    For tips about how to structure your extension and plugins, see the
+    plugins document. This section describes late stage steps for packaging
+    and (optionally) publishing your finished extension.
+
+When your extension is almost ready for release, FOOBAR
 
 
 
 
-
-
-
-PACKAGING INFORMATION
-=====================
 
 
 
