@@ -75,20 +75,26 @@ provides a :ref:`mainmenu` service object to the system with a method for
 adding a new top-level menu, and attributes to interact with existing
 top-level application menus.
 
-This design scheme is called the ["Provider-Consumer Pattern"](ADD_LINK) in
-JupyterLab, and is a type of [dependency injection pattern](ADD_LINK).
-
-.. note::
-    Read more about the general concept of software "design patterns" here.
-
 JupyterLab's Provider-Consumer Pattern
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The Provider-Consumer Pattern is the heart of what powers the reusability,
-extensibility, and swappability of core parts of the JupyterLab application,
-and of the extension system as a whole. Its name comes from the fact that
-one plugin "provides" a service object to the system, and other plugins can
-"consume" that object to reuse the features it provides.
+That design scheme, where some plugins "provide" service objects, and others
+"consume" them, is called the "Provider-Consumer Pattern" in JupyterLab, which
+is a type of "dependency injection" pattern in software design [ADD_LINK].
+
+.. note::
+    Read more about the general concept of software "design patterns" here
+
+The Provider-Consumer Pattern is what powers the reusability, extensibility,
+and swappability of core parts of the JupyterLab application, and of the
+extension system as a whole. By (optionally) following this design scheme,
+you can achieve the same kind of flexibility in your own extensions.
+
+To make requests for service objects that you can use in your code, or to
+provide your own service objects that others can use, you will list them in
+the metadata fields on your plugin objects.
+
+The details are described below.
 
 How Plugin Metadata Powers Reusability in JupyterLab
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -184,184 +190,32 @@ distribution without a status bar to use the consumer plugin.
 More Details about Tokens
 """""""""""""""""""""""""
 
-JupyterLab uses tokens to identify reusable features (called "service objects" [ADD_LINK])
+JupyterLab uses tokens to identify reusable features (remember, these are also called "service objects" [ADD_LINK])
 in the extension system. A token is an instance of the Lumino Token class.
-
-The Status Bar in JupyterLab is an example of a feature that your plugins can
-request, which allows you to add your own status bar items, and it is identified
-by the IStatusBar token.
-
-
-
-
-
-
-
-JupyterLab uses tokens to identify reusable features ("Service objects" [ADD_LINK])
-in the extension system. A token is an instance of the Lumino Token class,
-and you will be using them to request features from JupyterLab
-
-
-
-The IStatusBar token, for instance, identifies the JupyterLab status bar
-
-
-
-
-
-
-
-JupyterLab uses tokens to identify reusable features ("service objects" [ADD_LINK])
-in the extension system. A token is an instance of the Lumino Token class.
-
-The Status Bar in JupyterLab is an example of a feature that your plugins can
-request, which allows you to add your own status bar items.
-
-
-
-To
-request the status bar service object, you will need to import the IStatusBar
-
-
-
-
-
-
-if you want to request the JupyterLab status bar in your plugin
-so that you can add new items to it,
-
-
-you can request the JupyterLab status bar
-
-
-
-
-The IStatusBar token, for instance, identifies the JupyterLab status bar. To
-request the status bar service object, you will need to import the IStatusBar
-
-
-
-
-
-You can request the JupyterLab Status Bar in your plugin to add new items to
-the status bar
-
-
-
-The JupyterLab Status Bar, for example,
-
-
-
-
-JupyterLab uses tokens to identify reusable features ("service objects" [ADD_LINK])
-in the extension system. A token is an instance of the Lumino Token class.
-
-The Status Bar in JupyterLab is an example of a feature that your plugins can
-request, which allows you to add your own status bar items.
-
-
-
-
-
-
-
-
-To request it, you will need to import the IStatusBar token that identifies
-it, and then list that token in the ``requires`` or ``optional`` field of
-your plugin.
-
-
-
-just list the IStatusBar token in the ``requires`` or
-``optional`` field of your plugin.
-
-
-A token is an instance of the Lumino Token class. JupyterLab uses Lumino
-Token objects to identify reusable features (also called "Service objects",
-read more about those in the XX section above) in the extension system.
-
-The Status Bar in JupyterLab is an example of a feature that your plugins
-can request (you can use it to add your own status bar items, for instance).
-
-
-you do so by listing the istatusbar in the lsit
-
-
-
-
-
-
-
-
-JupyterLab uses Lumino Token objects to identify reusable features (also
-called "Service objects", read more about those in the XX section above)
-in the extension system. The Status Bar in JupyterLab is an example of a 
-eature that your plugins can request, which allows you to add your own
-status bar items, for instance.
-for example,
-can be requested by your plugin by listing the IStatusBar token
-
-
-
-JupyterLab uses token objects to identify features ("service objects") in
-the extension system.
-
-
-
-Token objects are identifiers that JupyterLab uses to find services
-
-
-
-
-When your extension requests a feature in its ``requires`` or ``optional``
-fields, the items you list in those fields are tokens. Token objects
-are used by JupyterLab to identify
-
-
-
-those features are identified by a token (an instance of the Lumino
-token class).
-
-
-
-Tokens are objects that JupyterLab uses to identify service objects in the\
-
-
-
-
-When your extension requests a feature in its ``requires`` or ``optional``
-fields, those features are identified by a token (an instance of the Lumino
-token class).
-
-
-Tokens are used to identify service objects 
-
-
-
-When your extension is loaded by JupyterLab, any services from your plugins
-which are exported are registered with the extension system.
-
-To identify those services, JupyterLab uses a *token*, i.e., a concrete
-instance of the Lumino Token class.
 
 .. note::
    JupyterLab uses tokens to identify services (instead of strings, for
    example) to prevent conflicts between identifiers and to enable type
    checking when using TypeScript.
 
-A "provider" plugin will list its token in the plugin metadata ``provides``
+In JupyterLab's Provider-Consumer Pattern:
+
+- A "provider" plugin will list its token in the plugin metadata ``provides``
 field, and will return the associated service object from its ``activate``
 function.
 
-"Consumer" plugins will import the token: For example, the token might be
+- "Consumer" plugins will import the token: For example, the token might be
 imported from one of these places:
 
-- The Javascript package that the provider plugin comes from
-- From a third package that exports the token for use by both the provider and
-  the consumer (this pattern is commonly used by JupyterLab)
+  - The Javascript package that the provider plugin comes from
+  - From a third package that exports the token for use by both the provider and
+    the consumer (this pattern is commonly used by JupyterLab)
 
 The consumer plugin will then list the token in their plugin metadata
 ``requires`` or ``optional`` fields.
+
+When your extension is loaded by JupyterLab, any services provided by your
+plugins (which have been exported) are registered with the extension system.
 
 A token defined in TypeScript can also provide a TypeScript interface for
 the service it is associated with, to allow for extra type-checking (if a
@@ -370,76 +224,15 @@ against this interface when the package is compiled to JavaScript). This
 can help prevent errors by ensuring that a service cannot be swapped out
 unless it is compatible with the original service object.
 
+The status bar in JupyterLab is an example of a service that your plugins
+can request, which allows you to add your own status bar items, and it is
+identified by the IStatusBar token.
 
-
-
-
-
-
-
-
-
-
-
-If you plan to split up your extension into multiple plugins, it is helpful
-to know that the actual items you list in our ``requires`` and ``optional``
-fields are not actually the service objects or the plugins themselves, they are actually
-identifier objects called "Tokens"
-
-
-
-
-
-
-Publishing Your Own Tokens
-""""""""""""""""""""""""""
-
-If your extension has a provider plugin with an exported token, consumers
-will need to import that token to use it. That token should be exported in
-a published JavaScript package. Tokens need to be deduplicated in JupyterLab,
-and there are tools to do this for you, which you can read about in the
-:ref:`deduplication` section.
-
-A commonly used pattern in JupyterLab is to create and export a token from
-a standalone package that both the provider and consumer extensions import
-(instead of defining the token in the provider's package). This empowers a
-user to swap out the provider plugin for a different plugin that provides
-the same token, but with an alternative service implementation.
-
-For example:
-
-- The core JupyterLab ``filebrowser`` package exports a token
-  which represents the file browser service (enabling interactions with the
-  file browser)
-
-- The ``filebrowser-extension`` package contains a plugin that implements
-  the file browser in JupyterLab, and provides the file browser service to
-  JupyterLab (identified with the token imported from the ``filebrowser``
-  package)
-
-Using this pattern, extensions in JupyterLab that want to interact with the
-filebrowser-extension do not need to have a JavaScript dependency on the
-``filebrowser-extension`` package: They only need to import the token from
-the ``filebrowser`` package. This pattern enables users to seamlessly change
-the file browser in JupyterLab by writing their own extension that imports
-the same token from the ``filebrowser`` package, and provides it to the
-system with their own alternative file browser service.
-
-..
-   We comment out the following, until we can import from a submodule of a package. See https://github.com/jupyterlab/jupyterlab/pull/9475.
-
-   A pattern in core JupyterLab is to create and export tokens from a self-contained ``tokens`` JavaScript module in a package. This enables consumers to import a token directly from the package's ``tokens`` module (e.g., ``import { MyToken } from 'provider/tokens';``), thus enabling a tree-shaking bundling optimization to possibly bundle only the tokens and not other code from the package.
-
-
-
-
-
-
-
-
-
-
-
+To request the status bar service object, you need to import the IStatusBar
+token, and then list it in the ``requires`` or ``optional`` field of your
+plugin. JupyterLab will then pass the status bar service object as an argument
+to your plugin's ``activate`` function when it loads your extension (if it's
+available).
 
 Making Your Plugin a Provider
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -535,6 +328,68 @@ This means that anyone who makes a provider plugin for the StepCounter service
 must return an object that has a getStepCount method, incrementStepCount method,
 and a countChanges Signal (a Lumino Signal object).
 
+Designing for Reusability
+"""""""""""""""""""""""""
+
+If your extension has a provider plugin with an exported token, consumers
+will need to import that token to use it. That token should be made available
+by exporting it in a JavaScript package that consumers can import and use.
+Tokens need to be deduplicated in JupyterLab, and there are tools to do this
+for you, which you can read about in the :ref:`deduplication` section.
+
+A commonly used pattern in JupyterLab is to create and export a token from
+a standalone package that both the provider and consumer extensions import
+(instead of defining the token in the provider's package). This empowers a
+user to swap out the provider plugin for a different plugin that provides
+the same token, but with an alternative service implementation.
+
+For example:
+
+- The core JupyterLab ``filebrowser`` package exports a token
+  which represents the file browser service (enabling interactions with the
+  file browser)
+
+- The ``filebrowser-extension`` package contains a plugin that implements
+  the file browser in JupyterLab, and provides the file browser service to
+  JupyterLab (identified with the token imported from the ``filebrowser``
+  package)
+
+Using this pattern, extensions in JupyterLab that want to interact with the
+filebrowser-extension do not need to have a JavaScript dependency on the
+``filebrowser-extension`` package: They only need to import the token from
+the ``filebrowser`` package. This pattern enables users to seamlessly change
+the file browser in JupyterLab by writing their own extension that imports
+the same token from the ``filebrowser`` package, and provides it to the
+system with their own alternative file browser service.
+
+..
+   We comment out the following, until we can import from a submodule of a package. See https://github.com/jupyterlab/jupyterlab/pull/9475.
+
+   A pattern in core JupyterLab is to create and export tokens from a self-contained ``tokens`` JavaScript module in a package. This enables consumers to import a token directly from the package's ``tokens`` module (e.g., ``import { MyToken } from 'provider/tokens';``), thus enabling a tree-shaking bundling optimization to possibly bundle only the tokens and not other code from the package.
+
+
+
+
+
+
+
+
+
+
+.. _application_object:
+
+Application Object
+""""""""""""""""""
+
+A Jupyter front-end application object is given to a plugin's ``activate`` function as its first argument. The application object has a number of properties and methods for interacting with the application, including:
+
+-  ``commands`` - an extensible registry used to add and execute commands in the application.
+-  ``docRegistry`` - an extensible registry containing the document types that the application is able to read and render.
+-  ``restored`` - a promise that is resolved when the application has finished loading.
+-  ``serviceManager`` - low-level manager for talking to the Jupyter REST API.
+-  ``shell`` - a generic Jupyter front-end shell instance, which holds the user interface for the application. See :ref:`shell` for more details.
+
+See the JupyterLab API reference documentation for the ``JupyterFrontEnd`` class for more details.
 
 
 
@@ -550,68 +405,36 @@ and a countChanges Signal (a Lumino Signal object).
 
 
 
-Providing a service
-"""""""""""""""""""
 
-When an extension (the "provider") is providing a service identified by a token that is imported from a dependency ``token-package``, the provider should configure the dependency as a singleton. This makes sure the provider is identifying the service with the same token that others are importing. If ``token-package`` is not a core package, it will be bundled with the provider and available for consumers to import if they :ref:`require the service <dedup_require_service>`.
 
-.. code-block:: json
 
-   "jupyterlab": {
-     "sharedPackages": {
-       "token-package": {
-         "singleton": true
+.. _schemaDir:
+
+Plugin Settings
+^^^^^^^^^^^^^^^
+
+JupyterLab exposes a plugin settings system that can be used to provide
+default setting values and user overrides. A plugin's settings are specified with a JSON schema file. The ``jupyterlab.schemaDir`` field in ``package.json`` gives the relative location of the directory containing plugin settings schema files.
+
+The setting system relies on plugin ids following the convention ``<source_package_name>:<plugin_name>``. The settings schema file for the plugin ``plugin_name`` is ``<schemaDir>/<plugin_name>.json``.
+
+For example, the JupyterLab ``filebrowser-extension`` package exports the ``@jupyterlab/filebrowser-extension:browser`` plugin. In the ``package.json`` for ``@jupyterlab/filebrowser-extension``, we have::
+
+        "jupyterlab": {
+          "schemaDir": "schema",
         }
-      }
-    }
 
-.. _dedup_require_service:
+The file browser setting schema file (which specifies some default keyboard shortcuts and other settings for the filebrowser) is located in ``schema/browser.json`` (see `here <https://github.com/jupyterlab/jupyterlab/blob/main/packages/filebrowser-extension/schema/browser.json>`__).
 
-Requiring a service
-"""""""""""""""""""
+See the
+`fileeditor-extension <https://github.com/jupyterlab/jupyterlab/tree/main/packages/fileeditor-extension>`__
+for another example of an extension that uses settings.
 
-When an extension (the "consumer") is requiring a service provided by another extension (the "provider"), identified by a token imported from a package (the ``token-package``, which may be the same as the provider), the consumer should configure the dependency ``token-package`` to be a singleton to ensure the consumer is getting the exact same token the provider is using to identify the service. Also, since the provider is providing a copy of ``token-package``, the consumer can exclude it from its bundle.
+Please ensure that the schema files are included in the ``files`` metadata in ``package.json``.
 
-.. code-block:: json
+When declaring dependencies on JupyterLab packages, use the ``^`` operator before a package version so that the build system installs the newest patch or minor version for a given major version. For example, ``^4.0.0`` will install version 4.0.0, 4.0.1, 4.1.0, etc.
 
-   "jupyterlab": {
-     "sharedPackages": {
-       "token-package": {
-         "bundled": false,
-         "singleton": true
-        }
-      }
-    }
-
-.. _dedup_optional_service:
-
-Optionally using a service
-""""""""""""""""""""""""""
-
-When an extension (the "consumer") is optionally using a service identified by a token imported from a package (the ``token-package``), there is no guarantee that a provider is going to be available and bundling ``token-package``. In this case, the consumer should only configure ``token-package`` to be a singleton:
-
-.. code-block:: json
-
-   "jupyterlab": {
-     "sharedPackages": {
-       "token-package": {
-         "singleton": true
-        }
-      }
-    }
-
-.. TODO: fill out the following text to a more complete explanation of how the deduplication works.
-
-   Prebuilt extensions need to deduplicate many of their dependencies with other prebuilt extensions and with source extensions. This deduplication happens in two phases:
-
-   1. When JupyterLab is initialized in the browser, the core Jupyterlab build (including all source extensions) and each prebuilt extension can share copies of dependencies with a package cache in the browser.
-   2. A source or prebuilt extension can import a dependency from the cache while JupyterLab is running.
-
-   The main options controlling how things work in this deduplication are as follows. If a package is listed in this sharing config, it will be requested from the package cache.
-
-   * ``bundled`` - if true, a copy of this package is also provided to the package cache. If false, we will request a version from the package cache. Set this to false if we know that the package cache will have the package and you do not want to bundle a copy (perhaps to make your prebuilt bundle smaller).
-   ``singleton`` - if true, makes sure to use the same copy of a dependency that others are using, even if it is not the right version.
-   ``strictVersion`` - if true, throw an error if we would be using the wrong version of a dependency.
+A system administrator or user can override default values provided in a plugin's settings schema file with the :ref:`overrides.json <overridesjson>` file.
 
 
 
@@ -619,35 +442,7 @@ When an extension (the "consumer") is optionally using a service identified by a
 
 
 
-
-
-
-
-
-
-
-
-
-######
-So, this application plugin is a TypeScript object with several metadata
-fields. The ``id`` and ``activate`` fields are mandatory, the others are
-optional.
-
-The ``id`` and ``activate`` fields are mandatory, the others are
-optional. Most importantly, the ``requires``, ``optional`` and
-``activate``
-
-, most importantly, the ``requires``, ``optional``
-and ``activate`` fields (along with the ``id`` field which allows
-it to be identified inside the extension system).
-#######
-
-
-
-
-
-
-
+______________
 
 
 In the following discussion, the plugin that is providing a service to the
